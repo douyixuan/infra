@@ -35,6 +35,10 @@ repos:
     rev: 3.0.0
     hooks:
       - id: shellcheck
+        # This installer has two deliberate ShellCheck info-level exceptions
+        # (SC2015 validation chaining and literal Nginx $uri). It is validated
+        # separately by .github/workflows/static-site-deploy-snippet.yml.
+        exclude: ^snippets/static-site-deploy/install\.sh$
   - repo: https://github.com/antonbabenko/pre-commit-terraform
     rev: v1.100.0
     hooks:
