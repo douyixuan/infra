@@ -15,13 +15,17 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
-      - name: Bash syntax
+      - name: Bash syntax and CLI smoke test
         run: |
           bash -n snippets/static-site-deploy/install.sh
           bash -n snippets/static-site-deploy/make-offline-bundle.sh
+          bash snippets/static-site-deploy/install.sh --help >/dev/null
+          bash snippets/static-site-deploy/make-offline-bundle.sh --help >/dev/null
       - name: ShellCheck
         run: |
           sudo apt-get update
           sudo apt-get install -y shellcheck
-          shellcheck snippets/static-site-deploy/install.sh
+          # SC2015: the validation expressions intentionally use A && B || die.
+          # SC2016: Nginx $uri must remain literal in the generated config.
+          shellcheck -e SC2015,SC2016 snippets/static-site-deploy/install.sh
           shellcheck snippets/static-site-deploy/make-offline-bundle.sh
