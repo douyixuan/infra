@@ -14,7 +14,7 @@ GitLab build job
   -> Nginx
 ```
 
-The installer is idempotent enough to re-run for the same site and supports multiple sites by changing `SITE_NAME`, `SITE_HOST`, and/or `LISTEN_PORT`.
+The installer is idempotent enough to re-run for the same site and supports multiple sites by changing `SITE_NAME`, `SITE_HOST`, and/or `LISTEN_PORT`. Repository CI validates both shell scripts with `bash -n` and ShellCheck.
 
 ## 1. Create the GitLab runner
 
