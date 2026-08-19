@@ -1,0 +1,27 @@
+name: static-site-deploy-snippet
+
+on:
+  push:
+    paths:
+      - 'snippets/static-site-deploy/**'
+      - '.github/workflows/static-site-deploy-snippet.yml'
+  pull_request:
+    paths:
+      - 'snippets/static-site-deploy/**'
+      - '.github/workflows/static-site-deploy-snippet.yml'
+
+jobs:
+  validate:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Bash syntax
+        run: |
+          bash -n snippets/static-site-deploy/install.sh
+          bash -n snippets/static-site-deploy/make-offline-bundle.sh
+      - name: ShellCheck
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y shellcheck
+          shellcheck snippets/static-site-deploy/install.sh
+          shellcheck snippets/static-site-deploy/make-offline-bundle.sh
