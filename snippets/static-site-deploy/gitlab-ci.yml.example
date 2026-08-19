@@ -1,0 +1,36 @@
+# Copy/adapt this into your project's .gitlab-ci.yml.
+# Assumption: build-site produces site.zip whose root contains index.html.
+
+stages:
+  - build
+  - deploy
+
+build-site:
+  stage: build
+  script:
+    # Replace with your real build command.
+    - mkdir -p dist
+    - test -f dist/index.html
+    - cd dist
+    - zip -qr ../site.zip .
+  artifacts:
+    paths:
+      - site.zip
+    expire_in: 7 days
+
+deploy-static:
+  stage: deploy
+  tags:
+    - deploy-215
+  needs:
+    - job: build-site
+      artifacts: true
+  resource_group: production-static
+  script:
+    - test -f site.zip
+    - deploy-static-site my-site site.zip "$CI_COMMIT_SHA"
+  environment:
+    name: production
+    url: http://192.168.22.215
+  rules:
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
